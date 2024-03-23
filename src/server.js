@@ -1,95 +1,79 @@
 const express = require('express');
-const cors = require('cors'); // Import cors
-const app = express();
+const cors = require('cors');
 const request = require('request');
 require('dotenv').config();
 
-const API_KEY = process.env.API_KEY || '';
+const app = express();
 const PORT = process.env.PORT || 3000;
+const API_KEY = process.env.API_KEY || '';
 
-// Enable CORS for all routes
 app.use(cors());
 
-app.get('/api/cryptocurrency/:crypto', (req, res) => {
-  const crypto = req.params.crypto;
-  const url2 = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${crypto}`;
 
-  request.get(
-    {
-      url: url2,
-      json: true,
-      headers: {
-        'X-CMC_PRO_API_KEY': API_KEY,
-      },
+app.get('/api/list', (req, res) => {
+  const url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map';
+  const options = {
+    url: url,
+    qs: {
+        limit: 10 // Limitar los resultados a 10 criptomonedas
     },
-    (error, response, data) => {
-      if (error) {
-        return res.send({
-          error: error,
-        });
+    headers: {
+        'X-CMC_PRO_API_KEY': API_KEY,
+    },
+  };
+  request.get(options, (error, response, body) => {
+          if (error) {
+              console.error('Error fetching coin map:', error);
+              res.status(500).json({ error: 'Internal server error' });
+          } else {
+              const data = JSON.parse(body);
+              res.json(data);
+          }
       }
-
-      res.send({
-        data: data,
-      });
-    }
   );
 });
 
-app.get('/api/cryptocurrency/info/:crypto', (req, res) => {  
-  const crypto = req.params.crypto;
-  const url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/info?symbol=${crypto}`
-  request.get(
-    {
-      url: url,
-      json: true,
-      headers: {
-        'X-CMC_PRO_API_KEY': API_KEY,
-      },
-    },
-    (error, response, data) => {
-      if (error) {
-        return res.send({
-          error: error,
-        });
-      }
+// Ruta para obtener información de una criptomoneda por su símbolo
+app.get('/api/cryptocurrencies', async (req, res) => {
+  const cryptos = ['BTC', 'ETH', 'XRP', 'SOL', 'POL', 'NEXO']; // Ejemplo de criptomonedas a consultar
 
-      res.send({
-        data: data,
-      });
-    }
-  );
+  try {
+    const responses = await Promise.all(cryptos.map(crypto => getCryptoData(crypto)));
+    const data = responses.reduce((acc, response, index) => {
+      acc[cryptos[index]] = response.data[cryptos[index]]; // Acceder al objeto de datos de la criptomoneda específica
+      return acc;
+    }, {});
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+
 });
 
-app.get('/api/content/posts/top', (req, res) => {  
-  const url = `https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest`
-  request.get(
-    {
-      url: url,
-      json: true,
-      headers: {
-        'X-CMC_PRO_API_KEY': API_KEY,
+// Función para obtener información de una criptomoneda por su símbolo
+const getCryptoData = (crypto) => {
+  const url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${crypto}`;
+
+  return new Promise((resolve, reject) => {
+    request.get(
+      {
+        url: url,
+        json: true,
+        headers: {
+          'X-CMC_PRO_API_KEY': API_KEY,
+        },
       },
-    },
-    (error, response, data) => {
-      if (error) {
-        return res.send({
-          error: error,
-        });
+      (error, response, data) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(data);
+        }
       }
+    );
+  });
+};
 
-      res.send({
-        data: data,
-      });
-    }
-  );
-});
-
-app.use(
-  cors({
-    origin: 'http://localhost:5001', // Allow requests from this origin
-  })
-);
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
