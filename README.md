@@ -1,7 +1,3 @@
-# CoinAlertNew
-CoinAlertNew es una aplicación de seguimiento de noticias y eventos en tiempo real relacionados con el emocionante mundo de las criptomonedas y la tecnología blockchain.
-
-
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
