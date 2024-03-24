@@ -1,22 +1,11 @@
-import React, { useState, useContext } from 'react';
+// CryptoTable.js
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 
-const CryptoTable = ({ cryptoData }) => {
+const CryptoTable = ({ cryptoData, limit }) => {
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
-
-    const sortedCryptoData = [...cryptoData].sort((a, b) => {
-        if (sortConfig.key !== null) {
-            if (a[sortConfig.key] < b[sortConfig.key]) {
-                return sortConfig.direction === 'asc' ? -1 : 1;
-            }
-            if (a[sortConfig.key] > b[sortConfig.key]) {
-                return sortConfig.direction === 'asc' ? 1 : -1;
-            }
-        }
-        return 0;
-    });
-
+    // Función para manejar la clasificación de la tabla
     const requestSort = key => {
         let direction = 'asc';
         if (sortConfig.key === key) {
@@ -25,6 +14,7 @@ const CryptoTable = ({ cryptoData }) => {
         setSortConfig(direction ? { key, direction } : { key: null, direction: 'asc' });
     };
 
+    // Función para obtener las clases de estilo para las columnas
     const getClassNamesFor = name => {
         if (!sortConfig) {
             return;
@@ -33,8 +23,8 @@ const CryptoTable = ({ cryptoData }) => {
     };
 
     return (
-        <div className={"table-responsive"}>
-            <table className={"table"}>
+        <div className="table-responsive">
+            <table className="table table-hover" >
                 <thead>
                     <tr>
                         <th onClick={() => requestSort('rank')} className={getClassNamesFor('rank')}>
@@ -70,7 +60,7 @@ const CryptoTable = ({ cryptoData }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedCryptoData.map(crypto => (
+                    {cryptoData.map(crypto => (
                         <tr key={crypto.id}>
                             <td>{crypto.rank}</td>
                             <td>{crypto.name}</td>
