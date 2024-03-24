@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Table } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 
@@ -30,7 +31,7 @@ const CryptoTable = ({ cryptoData, limit }) => {
 
     return (
         <div className="table-responsive">
-            <table className="table table-hover">
+            <Table responsive className=" table-hover" variant="dark">
                 <thead>
                     <tr>
                         <th onClick={() => requestSort('rank')} className={getClassNamesFor('rank')}>
@@ -76,7 +77,7 @@ const CryptoTable = ({ cryptoData, limit }) => {
                         </tr>
                     ))}
                 </tbody>
-            </table>
+            </Table>
         </div>
     );
 };
