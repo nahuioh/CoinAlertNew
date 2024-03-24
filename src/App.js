@@ -1,7 +1,7 @@
 // App.js
 
 import React from 'react';
-import CryptoList from './CryptoList';
+import CryptoList from './pages/CryptoList';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Importa el archivo CSS de Bootstrap
 import './App.css';
 
