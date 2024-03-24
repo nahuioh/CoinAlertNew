@@ -28,8 +28,8 @@ const CryptoList = () => {
 
     return (
         <div>
-            <button className="btn btn-primary float-right" onClick={loadMore}>Load More</button>
             <Table cryptoData={cryptoData} limit={limit} />
+            <button className="btn btn-primary" onClick={loadMore}>Load More</button>
         </div>
     );
 };

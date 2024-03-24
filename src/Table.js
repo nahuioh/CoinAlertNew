@@ -1,10 +1,10 @@
-// CryptoTable.js
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 
 const CryptoTable = ({ cryptoData, limit }) => {
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
     // Función para manejar la clasificación de la tabla
     const requestSort = key => {
         let direction = 'asc';
@@ -22,38 +22,44 @@ const CryptoTable = ({ cryptoData, limit }) => {
         return sortConfig.key === name ? sortConfig.direction : undefined;
     };
 
+    const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-ES', options);
+    };
+
     return (
         <div className="table-responsive">
-            <table className="table table-hover" >
+            <table className="table table-hover">
                 <thead>
                     <tr>
                         <th onClick={() => requestSort('rank')} className={getClassNamesFor('rank')}>
                             <div className="d-flex align-items-center justify-content-between">
-                                Rank
+                                Posición
                                 {sortConfig.key === 'rank' && (sortConfig.direction === 'asc' ? <FontAwesomeIcon icon={faSortUp} /> : <FontAwesomeIcon icon={faSortDown} />)}
                             </div>
                         </th>
                         <th onClick={() => requestSort('name')} className={getClassNamesFor('name')}>
                             <div className="d-flex align-items-center justify-content-between">
-                                Name
+                                Nombre
                                 {sortConfig.key === 'name' && (sortConfig.direction === 'asc' ? <FontAwesomeIcon icon={faSortUp} /> : <FontAwesomeIcon icon={faSortDown} />)}
                             </div>
                         </th>
                         <th onClick={() => requestSort('symbol')} className={getClassNamesFor('symbol')}>
                             <div className="d-flex align-items-center justify-content-between">
-                                Symbol
+                                Símbolo
                                 {sortConfig.key === 'symbol' && (sortConfig.direction === 'asc' ? <FontAwesomeIcon icon={faSortUp} /> : <FontAwesomeIcon icon={faSortDown} />)}
                             </div>
                         </th>
                         <th onClick={() => requestSort('first_historical_data')} className={getClassNamesFor('first_historical_data')}>
                             <div className="d-flex align-items-center justify-content-between">
-                                First Historical Data
+                                Primera Fecha Histórica
                                 {sortConfig.key === 'first_historical_data' && (sortConfig.direction === 'asc' ? <FontAwesomeIcon icon={faSortUp} /> : <FontAwesomeIcon icon={faSortDown} />)}
                             </div>
                         </th>
                         <th onClick={() => requestSort('last_historical_data')} className={getClassNamesFor('last_historical_data')}>
                             <div className="d-flex align-items-center justify-content-between">
-                                Last Historical Data
+                                Última Fecha Histórica
                                 {sortConfig.key === 'last_historical_data' && (sortConfig.direction === 'asc' ? <FontAwesomeIcon icon={faSortUp} /> : <FontAwesomeIcon icon={faSortDown} />)}
                             </div>
                         </th>
@@ -65,8 +71,8 @@ const CryptoTable = ({ cryptoData, limit }) => {
                             <td>{crypto.rank}</td>
                             <td>{crypto.name}</td>
                             <td>{crypto.symbol}</td>
-                            <td>{crypto.first_historical_data}</td>
-                            <td>{crypto.last_historical_data}</td>
+                            <td>{formatDate(crypto.first_historical_data)}</td>
+                            <td>{formatDate(crypto.last_historical_data)}</td>
                         </tr>
                     ))}
                 </tbody>
